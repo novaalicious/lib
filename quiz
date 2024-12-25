@@ -1,0 +1,86 @@
+package com.example.quizcompetition;
+
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+    private TextView questionText;
+    private RadioGroup optionGroup;
+    private Button nextButton;
+
+    private String[] questions = {
+            "What is the capital of India?",
+            "Who developed Java?",
+            "Which planet is known as the Red Planet?"
+    };
+
+    private String[][] options = {
+            {"Delhi", "Mumbai", "Kolkata", "Chennai"},
+            {"James Gosling", "Dennis Ritchie", "Bjarne Stroustrup", "Guido van Rossum"},
+            {"Earth", "Mars", "Jupiter", "Venus"}
+    };
+
+    private int[] correctAnswers = {0, 0, 1};
+    private int currentQuestionIndex = 0;
+    private int score = 0;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        questionText = findViewById(R.id.questionText);
+        optionGroup = findViewById(R.id.optionGroup);
+        nextButton = findViewById(R.id.nextButton);
+
+        loadQuestion();
+
+        optionGroup.setOnCheckedChangeListener((group, checkedId) -> nextButton.setEnabled(true));
+
+        nextButton.setOnClickListener(v -> {
+            checkAnswer();
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        });
+    }
+
+    private void loadQuestion() {
+        questionText.setText(questions[currentQuestionIndex]);
+        optionGroup.removeAllViews();
+
+        for (int i = 0; i < options[currentQuestionIndex].length; i++) {
+            RadioButton radioButton = new RadioButton(this);
+            radioButton.setText(options[currentQuestionIndex][i]);
+            radioButton.setId(i);
+            optionGroup.addView(radioButton);
+        }
+        optionGroup.clearCheck();
+        nextButton.setEnabled(false);
+    }
+
+    private void checkAnswer() {
+        int selectedId = optionGroup.getCheckedRadioButtonId();
+        if (selectedId == correctAnswers[currentQuestionIndex]) {
+            score++;
+            Toast.makeText(this, "Correct!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Wrong!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showResult() {
+        Toast.makeText(this, "Quiz Over! Your score: "
+                + score + "/" + questions.length, Toast.LENGTH_LONG).show();
+        nextButton.setEnabled(false);
+    }
+}
