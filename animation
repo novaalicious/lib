@@ -1,0 +1,54 @@
+animation.xml
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <scale
+        android:duration="1000"
+        android:fromXScale="1.0"
+        android:toXScale="1.5"
+        android:fromYScale="1.0"
+        android:toYScale="1.5"
+        android:pivotX="50%"
+        android:pivotY="50%" />
+
+    <rotate
+        android:duration="1000"
+        android:fromDegrees="0"
+        android:toDegrees="360"
+        android:pivotX="50%"
+        android:pivotY="50%" />
+</set>
+
+main.java
+
+package com.example.animation;
+
+import android.os.Bundle;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.ImageView;
+import androidx.appcompat.app.AppCompatActivity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+public class MainActivity extends AppCompatActivity {
+
+    private Button animateButton;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        ImageView imageView = findViewById(R.id.imageView);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 4;
+        Bitmap scaledBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.cube, options);
+        imageView.setImageBitmap(scaledBitmap);
+        animateButton = findViewById(R.id.animateButton);
+
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.animation);
+
+        animateButton.setOnClickListener(v -> imageView.startAnimation(animation));
+    }
+}
